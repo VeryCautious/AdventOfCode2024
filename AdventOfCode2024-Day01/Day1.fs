@@ -23,8 +23,8 @@ let count xs x =
     |> Array.length
 
 
-let day1Result name = 
-    File.ReadAllLines name 
+let solvePart1 fileName = 
+    File.ReadAllLines fileName 
     |> Array.map parseLine
     |> Array.unzip
     |> (mapElem Array.sort)
@@ -32,8 +32,8 @@ let day1Result name =
     |> Array.map abs
     |> Array.sum
 
-let day1Result2 name = 
-    File.ReadAllLines name
+let solvePart2 fileName = 
+    File.ReadAllLines fileName
     |> Array.map parseLine
     |> Array.unzip
     |> (fun (x,y) -> x |> Array.map (fun z -> count y z |> (*) z ))

@@ -1,23 +1,23 @@
 module Tests
 
-open System
 open Xunit
 open Day2
 
-
-
-[<Fact>]
-let ``My test`` () =
-    Assert.Equal(2, day2Result "Data2-Example.txt")
+let exampleFile = "Data2-Example.txt"
+let file = "Data2.txt"
 
 [<Fact>]
-let ``My test 2`` () =
-    Assert.Equal(390, day2Result "Data2.txt")
+let ``Part1 ExampleFile`` () =
+    Assert.Equal(2, solvePart1 exampleFile)
 
 [<Fact>]
-let ``My test 3`` () =
-    Assert.Equal(4, day2ResultPart2 "Data2-Example.txt")
+let ``Part1 File`` () =
+    Assert.Equal(390, solvePart1 file)
 
 [<Fact>]
-let ``My test 4`` () =
-    Assert.Equal(439, day2ResultPart2 "Data2.txt")
+let ``Part2 ExampleFile`` () =
+    Assert.Equal(4, solvePart2 exampleFile)
+
+[<Fact>]
+let ``Part2 File`` () =
+    Assert.Equal(439, solvePart2 file)

@@ -36,13 +36,13 @@ type Report =
         report.Levels
         |> Seq.mapi (fun i _ -> { Levels = Seq.removeAt i report.Levels })
 
-let day2Result name = 
+let solvePart1 name = 
     File.ReadAllLines name 
     |> Seq.map Report.fromLine
     |> Seq.filter Report.isSafe
     |> Seq.length
 
-let day2ResultPart2 name = 
+let solvePart2 name = 
     File.ReadAllLines name 
     |> Seq.map Report.fromLine
     |> Seq.map (Report.dampeningOptions >> (anyMatch Report.isSafe))

@@ -31,12 +31,10 @@ let applyOperations noDeactivation ops =
     applyOperations' (Seq.toList ops) (0, true)
     |> fst
 
-let solve fileName =
+let solve fileName noDeactivation =
     readMemory fileName
     |> extractMuls
-    |> applyOperations true
+    |> applyOperations noDeactivation
 
-let solveWithDeactivation fileName =
-    readMemory fileName
-    |> extractMuls
-    |> applyOperations false
+let solvePart1 fileName = solve fileName true
+let solvePart2 fileName = solve fileName false
