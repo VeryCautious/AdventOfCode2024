@@ -1,6 +1,7 @@
 ﻿module Day4
 
 type Indicies = (int*int) array
+type XIndicies = ((int*int) array) * ((int*int) array)
 type Field = char array array
 
 let read2DArray fileName = 
@@ -47,6 +48,35 @@ let getPossibleIndecies (array: Field) =
     let reversedDiagonalIndicies = diagonalIndicies |> Array.map Array.rev
     Array.concat [|rowIndicies; colIndicies; reversedRowIndicies; reversedColIndicies; diagonalIndicies; reversedDiagonalIndicies|]
 
+let cartesian a b = a |> Array.collect (fun x -> b |> Array.map (fun y -> (x, y)))
+
+let getXIndices = ([|(-1,-1); (0,0); (1,1)|], [|(-1,1); (0,0); (1,-1)|])
+    
+let getXIndeciesAround (x,y) =
+    let (a,b) = getXIndices
+    let c = a |> Array.map (fun (dx, dy) -> (x + dx, y + dy))
+    let d = b |> Array.map (fun (dx, dy) -> (x + dx, y + dy))
+    (c, d)
+
+let matches (array: Field) (indicies: XIndicies) =
+    let (a, b) = indicies
+    let aStr = stringFrom array a
+    let bStr = stringFrom array b
+    let aFit = (aStr = "MAS") || (aStr = "SAM")
+    let bFit = (bStr = "MAS") || (bStr = "SAM")
+    aFit && bFit
+
+let containedIn (array: Field) (indicies: XIndicies) =
+    Array.concat [fst indicies; snd indicies]
+    |> Array.exists (fun (x, y) -> x < 0 || x >= array.Length || y < 0 || y >= array.[0].Length)
+    |> not
+
+let getCrossIndicies (array: Field) =
+    let coords = cartesian [|0..(array.Length - 1)|] [|0..(array.[0].Length - 1)|]
+    coords
+    |> Array.map (getXIndeciesAround)
+    |> Array.filter (containedIn array)
+
 let countWordInArray (word: string) (array: Field) =
     getPossibleIndecies array
     |> Array.map (stringFrom array) 
@@ -55,4 +85,11 @@ let countWordInArray (word: string) (array: Field) =
 
 let solvePart1 (fileName: string) = 
     read2DArray fileName
-    |> countWordInArray "XMAS" 
+    |> countWordInArray "XMAS"
+
+let solvePart2 (fileName: string) = 
+    let field = read2DArray fileName
+    field
+    |> getCrossIndicies
+    |> Array.filter (matches field)
+    |> Array.length

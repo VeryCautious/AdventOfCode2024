@@ -14,6 +14,15 @@ let ``Part1 ExampleFile`` () =
 let ``Part1 File`` () =
     Assert.Equal(2644, solvePart1 file)
 
+[<Fact>]
+let ``Part2 ExampleFile`` () =
+    Assert.Equal(9, solvePart2 exampleFile)
+
+[<Fact>]
+let ``Part2 File`` () =
+    Assert.Equal(1952, solvePart2 file)
+
+
 module IndexTests =
 
     [<Fact>]
