@@ -7,7 +7,7 @@ type Guard = {
     Position: int*int
 }
 type Field = bool[,]
-type MoveResult = Done | Walking | Looped
+type MoveResult = Done | Walking | Looped | Turning
 
 let turnRight (x,y) = (y,-x)
 let add (x,y) (a,b) = (x+a, y+b)
@@ -29,16 +29,21 @@ let readInput fileName =
     Array2D.init width height (fun x y -> field[x][y]), guard
 
 let moveGuard (field: Field) (guard: Guard) =
-    let (onBoard, (newX, newY)) = guard.Position |> addChecked field guard.Faces
-    let nextIsObstical = (newX, newY) |> addChecked field guard.Faces |> (fun (onField,(obsX, obsY)) -> onField && field[obsX, obsY])
-    let newFaces = if nextIsObstical then guard.Faces |> turnRight else guard.Faces
-
-    if onBoard then 
-        let newGuard = { guard with Position = (newX, newY); Faces = newFaces }
-        let nextIsOnBoard = newGuard.Position |> addChecked field newGuard.Faces |> fst
-        if nextIsOnBoard then Some (Walking, newGuard) else Some (Done, newGuard)
-    else
-        None
+    let (onField, (newX, newY)) = guard.Position |> addChecked field guard.Faces
+    let nextIsObstical = onField && field[newX, newY]
+    
+    if nextIsObstical then
+        Some (Turning,{ guard with Faces = guard.Faces |> turnRight })
+    else 
+        if onField then
+            let newGuard = { guard with Position = (newX, newY) }
+            let nextIsOnBoard = newGuard.Position |> addChecked field newGuard.Faces |> fst
+            if nextIsOnBoard then 
+                Some (Walking, newGuard) 
+            else 
+                Some (Done, newGuard)
+        else
+            None
 
 let addValue (visited:HashSet<Guard>) guard = 
     visited.Add guard |> ignore

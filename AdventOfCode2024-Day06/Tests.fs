@@ -20,6 +20,4 @@ let ``solvePart2 ExampleFile`` () =
 
 [<Fact>]
 let ``solvePart2 File`` () =
-    let value = solvePart2 file
-    Assert.Equal(true, 2000 < value)
-    Assert.Equal(true, 9999999 > value)
+    Assert.Equal(2143, solvePart2 file)
