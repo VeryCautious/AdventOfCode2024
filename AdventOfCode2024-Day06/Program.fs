@@ -1,8 +1,1 @@
-module Program
-  
-open Day6
-
-let [<EntryPoint>] main _ =
-    printSize "Data6.txt" |> ignore
-    0
-
+module Program = let [<EntryPoint>] main _ = 0

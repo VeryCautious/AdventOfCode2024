@@ -97,8 +97,3 @@ let solvePart2 fileName =
     |> Seq.map (findFinishedReason guard)
     |> Seq.filter ((=) Looped)
     |> Seq.length
-
-let printSize fileName =
-    let (field, guard) = readInput fileName
-    let all = allObstacleOptions field guard
-    printfn "Size: %d" (Seq.length all)
