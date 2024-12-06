@@ -14,19 +14,16 @@ let add (x,y) (a,b) = (x+a, y+b)
 let isOnFiled (field:Field) (x,y) = x >= 0 && x < field.GetLength(0) && y >= 0 && y < field.GetLength(1)
 let addChecked (field:Field) (x,y) (a,b) = isOnFiled field (x+a, y+b), (x+a, y+b)
 let cartesian a b = a |> Seq.collect (fun x -> b |> Seq.map (fun y -> (x, y)))
-
-let findGuard fileName =
-    let field = System.IO.File.ReadAllLines(fileName) |> Array.rev |> Array.map (fun line -> line.ToCharArray()) |> Array.transpose
-    let guardChar = '^'
-    let guardPos = field |> Array.mapi (fun x _ -> field[x] |> Array.mapi (fun y _ -> x,y,field[x][y])) |> Array.collect id |> Array.find (fun (_,_,c) -> c = guardChar) |> fun (x,y,_) -> x,y
-    { Faces = (0,1); Position = guardPos }
+let findGuard charField = { Faces = (0,1); Position = charField |> Array.find (fun (_,_,c) -> c = '^') |> fun (x,y,_) -> x,y }
+let addValue (visited:HashSet<Guard>) guard = visited.Add guard |> (fun _ -> visited)
 
 let readInput fileName =
-    let field = System.IO.File.ReadAllLines(fileName) |> Array.rev |> Array.map (fun line -> line.ToCharArray() |> Array.map ((=) '#')) |> Array.transpose
+    let field = System.IO.File.ReadAllLines(fileName) |> Array.rev |> Array.map (fun line -> line.ToCharArray()) |> Array.transpose
     let width = field |> Array.length
     let height = field.[0] |> Array.length
-    let guard = findGuard fileName
-    Array2D.init width height (fun x y -> field[x][y]), guard
+    let coords = field |> Array.mapi (fun x _ -> field[x] |> Array.mapi (fun y _ -> x,y,field[x][y])) |> Array.collect id
+    let guard = findGuard coords
+    Array2D.init width height (fun x y -> field[x][y] = '#'), guard
 
 let moveGuard (field: Field) (guard: Guard) =
     let (onField, (newX, newY)) = guard.Position |> addChecked field guard.Faces
@@ -44,11 +41,7 @@ let moveGuard (field: Field) (guard: Guard) =
                 Some (Done, newGuard)
         else
             None
-
-let addValue (visited:HashSet<Guard>) guard = 
-    visited.Add guard |> ignore
-    visited
-
+    
 let unfoldMovement field (visited:HashSet<Guard>, guard:Option<Guard>) =
     match guard with
     | None -> None
