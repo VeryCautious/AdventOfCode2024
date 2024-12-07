@@ -1,6 +1,6 @@
 ﻿module Day7
 
-type Operation = Add | Mul
+type Operation = Add | Mul | Concat
 
 let addOneMul (operations:Operation List) =
     let n = operations.Length
@@ -18,6 +18,17 @@ let operatorCombinations (n:int) =
             old @ [newComb]
     combinations n n
 
+let combWithConcat (n:int) =
+    let rec combinations (n:int) (mMuls:int) =
+        if mMuls = 0 then
+            [[List.init n (fun _ -> Add)]]
+        else
+            let old = combinations n (mMuls-1)
+            let newComb = old |> List.last |> List.collect addOneMul |> List.distinct
+            let newCombWithConcat = old |> List.last |> List.collect (fun ops -> [ops @ [Concat]; ops @ [Add]])
+            old @ [newCombWithConcat; newComb]
+    combinations n n
+
 let eval (values:int64 array) (operations:Operation list) =
     let zip = Array.zip values (List.toArray (Add::operations))
     zip
@@ -25,6 +36,7 @@ let eval (values:int64 array) (operations:Operation list) =
         match o with
             | Add -> acc + v
             | Mul -> acc * v
+            | Concat -> string(acc) + string(v) |> int64
         ) 0L
 
 let isSolvable (values: int64 array) (target: int64) =

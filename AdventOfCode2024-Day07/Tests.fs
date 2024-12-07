@@ -40,3 +40,8 @@ let ``avawdal`` () =
     let value = operatorCombinations 6
     Assert.Equal(64, value |> List.collect id |> List.distinct |> List.length)
     value |> List.iteri (fun i b -> Assert.True(List.forall (fun a -> a |> List.filter ((=) Mul) |> List.length |> ((=) i)) b))
+
+[<Fact>]
+let ``avawdawdal`` () =
+    let value = combWithConcat 3
+    Assert.Equal(27, value |> List.collect id |> List.distinct |> List.length)
