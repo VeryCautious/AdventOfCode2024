@@ -1,4 +1,4 @@
 ﻿namespace AdventOfCode_Utils
 
-module Say =
-    let hello name = "Hello " + name
+module SeqU =
+    let cartesian a b = a |> Seq.collect (fun x -> b |> Seq.map (fun y -> (x, y)))

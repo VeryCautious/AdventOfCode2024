@@ -14,6 +14,15 @@ let ``My testkmwalda`` () =
     Assert.Equal(4122618559853L, value)
 
 [<Fact>]
+let ``My teawdwast`` () =
+    Assert.Equal(11387L, solvePart2 "Data7-Example.txt")
+
+[<Fact>]
+let ``My testawdkmwalda`` () =
+    let value = solvePart2 "Data7.txt"
+    Assert.Equal(4122618559853L, value)
+
+[<Fact>]
 let ``adwMy testa`` () =
     let x = addOneMul [Add;Add;Add]
     Assert.Equal(3, x.Length)
@@ -43,5 +52,5 @@ let ``avawdal`` () =
 
 [<Fact>]
 let ``avawdawdal`` () =
-    let value = combWithConcat 3
-    Assert.Equal(27, value |> List.collect id |> List.distinct |> List.length)
+    let value = generateLists 3
+    Assert.Equal(27, value |> List.distinct |> List.length)

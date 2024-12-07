@@ -1,12 +1,15 @@
 ﻿module Day7
 
+open AdventOfCode_Utils
+
 type Operation = Add | Mul | Concat
 
-let addOneMul (operations:Operation List) =
+let addOne (op:Operation) (operations:Operation List) =
     let n = operations.Length
     [0..n-1]
-    |> List.filter (fun i -> operations[i] <> Mul)
-    |> List.map (fun i -> List.updateAt i Mul operations)
+    |> List.filter (fun i -> operations[i] = Add)
+    |> List.map (fun i -> List.updateAt i op operations)
+let addOneMul = addOne Mul
 
 let operatorCombinations (n:int) =
     let rec combinations (n:int) (mMuls:int) =
@@ -18,16 +21,12 @@ let operatorCombinations (n:int) =
             old @ [newComb]
     combinations n n
 
-let combWithConcat (n:int) =
-    let rec combinations (n:int) (mMuls:int) =
-        if mMuls = 0 then
-            [[List.init n (fun _ -> Add)]]
-        else
-            let old = combinations n (mMuls-1)
-            let newComb = old |> List.last |> List.collect addOneMul |> List.distinct
-            let newCombWithConcat = old |> List.last |> List.collect (fun ops -> [ops @ [Concat]; ops @ [Add]])
-            old @ [newCombWithConcat; newComb]
-    combinations n n
+let rec generateLists n =
+    if n = 0 then
+        [[]]
+    else
+        let smallerLists = generateLists (n - 1)
+        List.collect (fun lst -> [Add::lst; Mul::lst; Concat::lst]) smallerLists
 
 let eval (values:int64 array) (operations:Operation list) =
     let zip = Array.zip values (List.toArray (Add::operations))
@@ -46,6 +45,11 @@ let isSolvable (values: int64 array) (target: int64) =
     |> List.map (List.map fst)
     |> List.exists (List.exists ((=) target))
 
+let isSolvable2 (values: int64 array) (target: int64) =
+    generateLists (values.Length-1)
+    |> List.map (fun ops -> eval values ops)
+    |> List.exists ((=) target)
+
 let parseLine (line:string) =
     let split = line.Split(": ")
     match split with
@@ -60,5 +64,11 @@ let parseInput fileName =
 let solvePart1 fileName =
     parseInput fileName
     |> Array.filter (fun (target, values) -> isSolvable values target)
+    |> Array.map fst
+    |> Array.sum
+
+let solvePart2 fileName =
+    parseInput fileName
+    |> Array.filter (fun (target, values) -> isSolvable2 values target)
     |> Array.map fst
     |> Array.sum
