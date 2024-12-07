@@ -2,15 +2,13 @@
 
 type Operation = Add | Mul | Concat
 
+let prepend xs x = x::xs
 
 let rec generateLists (operators: Operation list) n =
-    if n = 0 then [[]] else
-        let smallerLists = generateLists operators (n - 1)
-        List.collect (fun lst -> operators |> List.map (fun op -> op::lst)) smallerLists
+    if n = 0 then [[]] else generateLists operators (n - 1) |> List.collect (fun lst -> operators |> List.map (prepend lst))
 
 let eval (values:int64 array) (operations:Operation list) =
-    let zip = Array.zip values (List.toArray (Add::operations))
-    zip
+    Array.zip values (List.toArray (Add::operations))
     |> Array.fold (fun acc (v, o) -> 
         match o with
             | Add -> acc + v
@@ -18,7 +16,7 @@ let eval (values:int64 array) (operations:Operation list) =
             | Concat -> string(acc) + string(v) |> int64
         ) 0L
 
-let isSolvable (operators:Operation list) (values: int64 array) (target: int64) =
+let isSolvable (operators:Operation list) (target: int64) (values: int64 array) =
     generateLists operators (values.Length-1)
     |> List.map (fun ops -> (eval values ops, Array.contains 1L values))
     |> List.map fst
@@ -37,7 +35,7 @@ let parseInput fileName =
 
 let calibrateWith (operators:Operation list) fileName =
     parseInput fileName
-    |> Array.filter (fun (target, values) -> isSolvable operators values target)
+    |> Array.filter (fun x -> x ||> (isSolvable operators))
     |> Array.map fst
     |> Array.sum
 
