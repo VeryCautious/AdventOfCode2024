@@ -14,6 +14,14 @@ let ``solvePart1 exampleFile`` () =
 let ``solvePart1 file`` () =
     Assert.Equal(461, solvePart1 file)
 
+[<Fact>]
+let ``solvePart2 exampleFile`` () =
+    Assert.Equal(81, solvePart2 exampleFile)
+
+[<Fact>]
+let ``solvePart2 file`` () =
+    Assert.Equal(875, solvePart2 file)
+
 module AdditionalTests =
 
     [<Fact>]
