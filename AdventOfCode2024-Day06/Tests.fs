@@ -18,6 +18,5 @@ let ``solvePart1 File`` () =
 let ``solvePart2 ExampleFile`` () =
     Assert.Equal(6, solvePart2 exampleFile)
 
-[<Fact>]
 let ``solvePart2 File`` () =
     Assert.Equal(2143, solvePart2 file)

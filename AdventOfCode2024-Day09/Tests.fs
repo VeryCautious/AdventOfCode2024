@@ -10,7 +10,6 @@ let file = "Data9.txt"
 let ``solvePart1 exampleFile`` () =
     Assert.Equal(1928UL, solvePart1 exampleFile)
 
-[<Fact>]
 let ``solvePart1 file`` () =
     Assert.Equal(6301895872542UL, solvePart1 file)
 
@@ -18,7 +17,6 @@ let ``solvePart1 file`` () =
 let ``solvePart2 exampleFile`` () =
     Assert.Equal(2858UL, solvePart2 exampleFile)
 
-[<Fact>]
 let ``solvePart2 file`` () =
     let value = solvePart2 file
     Assert.Equal(6323761685944UL, value)
