@@ -15,14 +15,12 @@ let nextStep n =
     | _ -> if hasEvenDigitCount(n) then split n else [n * 2024UL]
 
 let add (stones: Generic.IDictionary<uint64, uint64>) (v:uint64) (c:uint64) = if stones.ContainsKey(v) then stones[v] <- (c + stones[v]) else stones.Add(v, c)
-let simulateStep (stones: Map<uint64, uint64>) =
+let simulateStep (stones: IDictionary<uint64, uint64>) =
     let newStones = new Dictionary<uint64, uint64>()
-    Map.iter (fun k v -> nextStep k |> List.iter (fun newV -> add newStones newV v)) stones
-    newStones.Keys
-    |> Seq.map (fun k -> (k, newStones[k]))
-    |> Map
+    Seq.iter (fun k -> nextStep k |> List.iter (fun newV -> add newStones newV stones[k])) stones.Keys
+    newStones :> IDictionary<uint64, uint64>
 
-let simulate (steps:int) (stones: Map<uint64, uint64>) =
+let simulate (steps:int) (stones: IDictionary<uint64, uint64>) =
     List.fold (fun s _ -> simulateStep s) stones [1..steps]
 
 let amount (stones: Generic.IDictionary<uint64, uint64>) = stones.Values |> Seq.map uint64 |> Seq.sum
