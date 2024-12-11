@@ -5,7 +5,7 @@ open System.Collections.Generic
 
 let readInput fileName = (System.IO.File.ReadAllText fileName).Split(" ") |> Array.map (fun n -> (uint64 n, 1UL)) |> Map
 
-let digitCount (n:uint64) = string(n).Length //n |> float |> log10 |> floor |> uint64 |> (+) 1
+let digitCount (n:uint64) = n |> float |> log10 |> floor |> int |> (+) 1
 let hasEvenDigitCount (n:uint64) = (digitCount n) % 2 = 0
 let split (n:uint64) = n |> string |> (fun s -> [s.Substring(0, s.Length / 2); s.Substring(s.Length / 2)]) |> List.map uint64
 
