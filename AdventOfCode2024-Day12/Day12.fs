@@ -8,7 +8,6 @@ type Edge = Lower of (int*int) | Right of (int*int)
 let readInput = (FileU.read2DChars id) >> snd
 
 let adjecentCoord (x, y) = [(-1,0);(1,0);(0,-1);(0,1)] |> List.map (fun (dx, dy) -> (x+dx, y+dy))
-
 let adjecentSimilarFileds (field:char[,]) (x,y) = adjecentCoord (x,y) |> List.filter (fun (a,b) -> Array2DU.isOnMap field (a,b) && field[a,b] = field.[x,y])
 let fencesNeededFor (field:char[,]) (x,y) = adjecentSimilarFileds field (x,y) |> List.length |> (-) 4
 
@@ -21,7 +20,6 @@ let expandToGroup (field:char[,]) (x,y) =
         found |> List.iter q.Enqueue
     visited
     
-
 let area (group:(int*int)list) = group |> List.length
 let fences (field:char[,]) (group:(int*int)list) = group |> List.sumBy (fencesNeededFor field)
 
@@ -82,10 +80,8 @@ let toTuple x =
         | Lower c -> c
 
 let intersects (lower:Edge list, right:Edge list) = 
-    let xs = lower |> List.map (toTuple>>fst)
-    let ys = right |> List.map (toTuple>>snd)
-    let (minX,maxX) = xs |> (fun l -> (List.min l, List.max l))
-    let (minY,maxY) = ys |> (fun l -> (List.min l, List.max l))
+    let (minX,maxX) = lower |> List.map (toTuple>>fst) |> (fun l -> (List.min l, List.max l))
+    let (minY,maxY) = right |> List.map (toTuple>>snd) |> (fun l -> (List.min l, List.max l))
     let inters = List.tryFind (fun v -> List.contains v (List.map toTuple right)) (List.map toTuple lower)
     inters.IsSome && (fst inters.Value) < maxX && (fst inters.Value) >= minX && (snd inters.Value) < maxY && (snd inters.Value) >= minY
 
