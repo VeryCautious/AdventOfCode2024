@@ -44,10 +44,16 @@ let findEdges (group:(int*int)list) =
     |> List.filter (fun (_,v) -> v |> List.length = 1)
     |> List.map fst
 
-let chunkConsecutive (l:int list) =
-    l
+let chunkConsecutive (list:int list) =
+    let folder = (fun (last, prev) v ->
+        let isConseq = last+1 = v
+        match (isConseq, prev) with
+        | (true, x::xs) -> (v, (List.insertAt 0 v x)::xs)
+        | (false, xs) -> (v, [v]::xs)
+        | _ -> failwith "Error")
+    list
     |> List.sort
-    |> List.fold (fun (last, x::xs) v -> if last+1 = v then (v, (List.insertAt 0 v x)::xs) else (v, [v]::xs)) (-42, [[]])
+    |> List.fold folder (-42, [])
     |> snd
 
 let consolidateLower (edges: Edge list) =
