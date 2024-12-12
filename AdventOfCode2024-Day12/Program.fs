@@ -21,8 +21,14 @@ module Program =
         ()
     
     let [<EntryPoint>] main _ = 
-        let map = readInput "Data12-Example.txt"
+        let map = readInput "Data12-Example4.txt"
         let print = printEdges (map.GetLength 0) (map.GetLength 1)
-        let groups = findGroups map |> Seq.map findEdges
-        groups |> Seq.iter print
+        let groups = 
+            findGroups map 
+            |> Seq.map (fun g -> (findEdges g, g))
+            |> Seq.map (fun (e,g) -> (e, consolidatedEdges g))
+        groups |> Seq.iter (fun (x,y) -> 
+            print x
+            printfn "%d" y
+            printfn "<->")
         0

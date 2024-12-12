@@ -57,7 +57,7 @@ let chunkConsecutive (list:int list) =
     |> snd
 
 let consolidateLower (edges: Edge list) =
-    let consolidateRow (_:int, cs:((int*int)list)) = cs |> List.map fst |> chunkConsecutive
+    let consolidateRow (y:int, cs:((int*int)list)) = cs |> List.map fst |> chunkConsecutive |> List.map (List.map(fun x -> Lower (x, y)))
     edges
     |> List.map (fun e -> 
         match e with
@@ -67,7 +67,7 @@ let consolidateLower (edges: Edge list) =
     |> List.collect consolidateRow
 
 let consolidateRight (edges: Edge list) =
-    let consolidateColumn (_:int, cs:((int*int)list)) = cs |> List.map snd |> chunkConsecutive
+    let consolidateColumn (x:int, cs:((int*int)list)) = cs |> List.map snd |> chunkConsecutive  |> List.map (List.map(fun y -> Right (x, y)))
     edges
     |> List.map (fun e -> 
         match e with
@@ -76,6 +76,26 @@ let consolidateRight (edges: Edge list) =
     |> List.groupBy fst
     |> List.collect consolidateColumn
 
+let toTuple x = 
+    match x with
+        | Right c -> c
+        | Lower c -> c
+
+let intersects (lower:Edge list, right:Edge list) = 
+    let xs = lower |> List.map (toTuple>>fst)
+    let ys = right |> List.map (toTuple>>snd)
+    let (minX,maxX) = xs |> (fun l -> (List.min l, List.max l))
+    let (minY,maxY) = ys |> (fun l -> (List.min l, List.max l))
+    let inters = List.tryFind (fun v -> List.contains v (List.map toTuple right)) (List.map toTuple lower)
+    inters.IsSome && (fst inters.Value) < maxX && (fst inters.Value) >= minX && (snd inters.Value) < maxY && (snd inters.Value) >= minY
+
+let removeCrossings ((lower:Edge list list), (right:Edge list list)) =
+    SeqU.cartesian lower right
+    |> Seq.filter (intersects)
+    |> Seq.length
+    |> (*) 2
+    |> (+) ((Seq.length lower)+(Seq.length right))
+
 let consolidatedEdges (group:(int*int)list) = 
     group
     |> findEdges
@@ -83,8 +103,8 @@ let consolidatedEdges (group:(int*int)list) =
         match e with
         | Lower _ -> true
         | Right _ -> false)
-    |> fun (lowers, rights) -> [lowers |> consolidateLower; rights |> consolidateRight]
-    |> List.collect id
+    |> fun (lowers, rights) -> (lowers |> consolidateLower, rights |> consolidateRight)
+    |> removeCrossings
 
 
 let solvePart1 fileName =
@@ -96,5 +116,5 @@ let solvePart1 fileName =
 let solvePart2 fileName =
     let map = readInput fileName
     findGroups map 
-    |> Seq.map (fun g -> (area g) * (consolidatedEdges g |> List.length))
+    |> Seq.map (fun g -> (area g) * (consolidatedEdges g))
     |> Seq.sum
