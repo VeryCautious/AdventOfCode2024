@@ -15,6 +15,14 @@ let ``solvePart1 file`` () =
     Assert.Equal(1381056, solvePart1 file)
 
 [<Fact>]
+let ``solvePart2 exampleFile`` () =
+    Assert.Equal(1206, solvePart2 exampleFile)
+
+[<Fact>]
+let ``solvePart2 file`` () =
+    Assert.Equal(0, solvePart2 file)
+
+[<Fact>]
 let ``expandToGroup exampleFile`` () =
     let map = readInput exampleFile
     Assert.Equal(12, expandToGroup map (0,0) |> Seq.length)
