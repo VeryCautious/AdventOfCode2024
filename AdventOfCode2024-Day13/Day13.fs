@@ -27,14 +27,11 @@ let winnable (((x1, x2), (y1, y2), (c1, c2)):Machine) =
         let y = (x1*c2 - x2*c1)
         if x % det <> 0L || y % det <> 0L then None else Some (x / det, y / det)
 
-let solvePart1 fileName = 
-    readInput fileName (0L,0L)
+let solve fileName offset = 
+    readInput fileName offset
     |> Array.choose winnable
     |> Array.map (fun (x, y) -> 3L * x + y)
     |> Array.sum
 
-let solvePart2 fileName = 
-    readInput fileName (10000000000000L,10000000000000L)
-    |> Array.choose winnable
-    |> Array.map (fun (x, y) -> 3L * x + y)
-    |> Array.sum
+let solvePart1 fileName = solve fileName (0L,0L)
+let solvePart2 fileName = solve fileName (10000000000000L,10000000000000L)
