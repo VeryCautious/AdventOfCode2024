@@ -15,6 +15,9 @@ let ``solvePart1 exampleFile`` () =
 let ``solvePart1 file`` () =
     Assert.Equal(222208000 , solvePart1 file 101 103)
 
+let ``solvePart2 file`` () =
+    Assert.Equal(7623 , solvePart2 file 101 103)
+
 [<Fact>]
 let ``simulate example`` () =
     let poses = readInput exampleFile |> Array.map (simulate 11 7 100)
