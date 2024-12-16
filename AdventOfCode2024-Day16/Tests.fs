@@ -29,4 +29,4 @@ let ``solvePart2 exampleFile2`` () =
 
 [<Fact>]
 let ``solvePart2 file`` () =
-    Assert.Equal(0, solvePart2 file)
+    Assert.Equal(590, solvePart2 file)
