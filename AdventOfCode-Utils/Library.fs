@@ -10,7 +10,7 @@ module FileU =
     let read2DChars charMapper fileName =
         let field =
             System.IO.File.ReadAllLines fileName
-            |> Array.mapi (fun x line -> line.ToCharArray() |> Array.mapi (fun y c -> ((x, y), charMapper c)))
+            |> Array.mapi (fun y line -> line.ToCharArray() |> Array.mapi (fun x c -> ((x, y), charMapper c)))
             |> Array.collect id
         let width = field |> Array.map (fun ((x,_),_) -> x) |> Array.max |> (+) 1
         let height = field |> Array.map (fun ((_,y),_) -> y) |> Array.max |> (+) 1
